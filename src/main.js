@@ -1,8 +1,18 @@
 import Vue from 'vue'
 import App from './App.vue'
-
-Vue.config.productionTip = false
+import ViewUI from 'view-design';
+import Api from './api/index.js';
+import 'view-design/dist/styles/iview.css';
+import router from './router'
+import VueRouter from 'vue-router';
+Vue.prototype.$api = Api;
+Vue.use(ViewUI);
+Vue.use(VueRouter);
+Vue.config.productionTip = false;
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  el: '#app',
+  router,
+  components: { App },
+  template: '<App/>'
+})
