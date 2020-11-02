@@ -24,13 +24,17 @@
 .layout-footer-center {
   text-align: center;
 }
+
+navigation-bar{
+  width: 100%;
+}
 </style>
 <template>
   <div class="layout">
     <Layout>
-      <Header> 
+      <!-- <Header>  -->
         <navigation-bar></navigation-bar>
-      </Header>
+      <!-- </Header> -->
       <Content :style="{ padding: '0 50px' }"><router-view></router-view> </Content>
       <Footer class="layout-footer-center">2020 &copy; Yaning Li</Footer>
     </Layout>
