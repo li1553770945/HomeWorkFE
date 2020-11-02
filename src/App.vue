@@ -21,6 +21,10 @@
     margin: 0 auto;
     margin-right: 20px;
 } */
+.layout{
+  display: flex;
+      height: 100%;
+}
 .layout-footer-center {
   text-align: center;
 }
@@ -30,7 +34,7 @@ navigation-bar{
 }
 </style>
 <template>
-  <div class="layout">
+  <div class="layout" style="height:100%">
     <Layout>
       <!-- <Header>  -->
         <navigation-bar></navigation-bar>

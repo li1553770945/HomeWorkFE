@@ -29,6 +29,27 @@ export default {
       user: ""
     };
   },
+  methods:{
+    formatDate(UTCDateString) {
+      if (!UTCDateString) {
+        return "-";
+      }
+      function formatFunc(str) {
+        //格式化显示
+        return str > 9 ? str : "0" + str;
+      }
+      var date2 = new Date(UTCDateString); //这步是关键
+      var year = date2.getFullYear();
+      var mon = formatFunc(date2.getMonth() + 1);
+      var day = formatFunc(date2.getDate());
+      var hour = formatFunc(date2.getHours());
+      var minute = formatFunc(date2.getMinutes());
+      var second = formatFunc(date2.getSeconds());
+      var dateStr =
+        year + "-" + mon + "-" + day + " " + hour + ":" + minute + ":" + second;
+      return dateStr;
+    },
+  },
   created: function() {
     this.$api.get("me/", {}, response => {
       if (response.status == 200) {
@@ -36,8 +57,8 @@ export default {
         if (data.err_code == 0) {
           data = data.data;
           this.user = data;
-          this.user.last_login = new Date(data.last_login);
-          this.user.date_joined = new Date(data.date_joined);
+          this.user.last_login = this.formatDate(new Date(data.last_login));
+          this.user.date_joined = this.formatDate(new Date(data.date_joined));
         } else {
           this.$Message.error(data.error);
         }
