@@ -1,8 +1,13 @@
 <template>
   <div>
-    <Menu mode="horizontal"  active-name="homework">
-      <router-link to="/"><MenuItem name="homework" >作业</MenuItem></router-link>
-      <router-link to="/new"><MenuItem name="new" >发布</MenuItem></router-link>
+    <Menu mode="horizontal"  active-name="1-1">
+      <Submenu name="1">
+            <template slot="title">
+                作业
+            </template>
+                <router-link to="/"><MenuItem name="1-1">全部</MenuItem></router-link>
+        </Submenu>
+      <router-link to="/new"><MenuItem name="2" >发布</MenuItem></router-link>
       <!-- 如果没有登录 -->
       <div id="login-button" v-if="!logined"> 
         <Button @click="login">登陆</Button>

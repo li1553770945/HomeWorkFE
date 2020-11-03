@@ -13,7 +13,7 @@
             <FormItem label="提交类型" prop="type">
               <Select v-model="formItem.type">
                 <Option value="file">文件</Option>
-                <Option value="hypertext">超文本</Option>
+                <!-- <Option value="hypertext">超文本</Option> -->
               </Select>
             </FormItem>
             <FormItem label="科目" prop="subject">
@@ -30,7 +30,7 @@
                 placeholder="请输入备注"
               ></i-Input>
             </FormItem>
-            <FormItem label="成员可见完成情况">
+            <!-- <FormItem label="成员可见完成情况">
               <Select v-model="formItem.member_can_know_donelist">
                 <Option value="false">否</Option>
                 <Option value="true">是</Option>
@@ -41,7 +41,7 @@
                 <Option value="false">否</Option>
                 <Option value="true">是</Option>
               </Select>
-            </FormItem>
+            </FormItem> -->
             <FormItem label="截止时间">
               <DatePicker
                 type="datetime"
@@ -196,7 +196,7 @@ export default {
                   this.$Message.error("删除失败" + data.error);
                 } else {
                   this.$Message.success("删除成功");
-                  this.$router.push('/homework')
+                  this.$router.go(-1);
                 }
               }
             }

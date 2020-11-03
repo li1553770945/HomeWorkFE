@@ -12,6 +12,10 @@ export default new Router({
       redirect:'myhomework',
     },
     {
+      path:'/myhomework',
+      redirect:'/myhomework/1',
+    },
+    {
       path: '/me',
       name: 'Me',
       component: Me
@@ -27,7 +31,7 @@ export default new Router({
       component: Details
     },
     {
-      path: '/myhomework',
+      path: '/myhomework/:page',
       name: 'MyHomeWork',
       component: MyHomeWork
     },
