@@ -4,6 +4,7 @@ import Me from '../pages/Me'
 import Details from '../pages/Details'
 import MyHomeWork from '../pages/MyHomeWork'
 import New from '../pages/New'
+import Submit from '../pages/Submit'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -34,6 +35,11 @@ export default new Router({
       path: '/myhomework/:page',
       name: 'MyHomeWork',
       component: MyHomeWork
+    },
+    {
+      path: '/submit/:work_id',
+      name: 'Submit',
+      component: Submit
     },
   ]
 })
