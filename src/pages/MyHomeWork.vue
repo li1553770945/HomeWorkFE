@@ -63,6 +63,7 @@ export default {
     $route(to,from) {
       this.page =Number(to.params.page);
       this.getData();
+      from
     },
   },
   methods: {

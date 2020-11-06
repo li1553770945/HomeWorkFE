@@ -39,7 +39,7 @@ navigation-bar{
       <!-- <Header>  -->
         <navigation-bar></navigation-bar>
       <!-- </Header> -->
-      <Content :style="{ padding: '0 50px' }"><router-view></router-view> </Content>
+      <Content :style="{ padding: '0 50px' }"><router-view v-wechat-title="$route.meta.title"></router-view> </Content>
       <Footer class="layout-footer-center">2020 &copy; Yaning Li</Footer>
     </Layout>
   </div>

@@ -19,27 +19,33 @@ export default new Router({
     {
       path: '/me',
       name: 'Me',
-      component: Me
+      component: Me,
+      meta:{title:"我"}
     },
     {
       path: '/new',
       name: 'New',
-      component: New
+      component: New,
+      meta:{title:"新建作业"}
     },
     {
       path: '/details/:id',
       name: 'Details',
-      component: Details
+      component: Details,
+      meta:{title:"作业详情"}
     },
     {
       path: '/myhomework/:page',
       name: 'MyHomeWork',
-      component: MyHomeWork
+      component: MyHomeWork,
+      meta:{title:"我的作业"}
     },
     {
       path: '/submit/:work_id',
       name: 'Submit',
-      component: Submit
+      component: Submit,
+      meta:{ title:"提交作业"}
+     
     },
   ]
 })
