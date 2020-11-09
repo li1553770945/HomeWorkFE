@@ -10,6 +10,7 @@ import NewGroup from '../pages/NewGroup'
 import GroupDetials from '../pages/GroupDetails'
 import GroupCreate from '../pages/GroupCreate'
 import GroupJoin from '../pages/GroupJoin'
+import GroupMembers from '../pages/GroupMembers'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -81,6 +82,12 @@ export default new Router({
       name: 'GroupJoin',
       component:GroupJoin,
       meta:{ title:"我加入的组织"}
+    },
+    {
+      path: '/groupmembers/:id',
+      name: 'GroupMembers',
+      component:GroupMembers,
+      meta:{ title:"成员管理"} 
     },
   ]
 })

@@ -6,7 +6,7 @@
           <ListItem v-for="item in list_data" :key="item.id">
             <ListItemMeta :title="item.name" />
             创建人:{{ item.owner }} <br />
-            创建时间：{{ formatDate(item.create_time) }}
+            加入时间：{{ formatDate(item.time) }}
             <template slot="action">
               <Button :to="'../groupdetails/' + item.id">详细信息</Button>
             </template>

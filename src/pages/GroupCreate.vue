@@ -5,10 +5,10 @@
         <List item-layout="vertical">
           <ListItem v-for="item in list_data" :key="item.id">
             <ListItemMeta :title="item.name" />
-            创建人:{{ item.owner }} <br />
             创建时间：{{ formatDate(item.create_time) }}
             <template slot="action">
               <Button :to="'../groupdetails/' + item.id">详细信息</Button>
+              <Button :to="'../groupmembers/' + item.id">成员管理</Button>
             </template>
           </ListItem>
         </List>
