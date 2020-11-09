@@ -13,13 +13,13 @@
       </Submenu>
       <Submenu name="2">
         <template slot="title"> 小组 </template>
-        <router-link to="/"
+        <router-link to="/groupjoin/1"
           ><MenuItem name="2-1">我加入的</MenuItem></router-link
         >
-        <router-link to="/new"
+        <router-link to="/groupcreate/1"
           ><MenuItem name="2-2">我创建的</MenuItem></router-link
         >
-        <router-link to="/new"
+        <router-link to="/newgroup"
           ><MenuItem name="2-3">创建</MenuItem></router-link
         >
 

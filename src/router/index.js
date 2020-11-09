@@ -6,6 +6,10 @@ import MyHomeWork from '../pages/MyHomeWork'
 import MyHomeWorkCreate from '../pages/MyHomeWorkCreate'
 import New from '../pages/New'
 import Submit from '../pages/Submit'
+import NewGroup from '../pages/NewGroup'
+import GroupDetials from '../pages/GroupDetails'
+import GroupCreate from '../pages/GroupCreate'
+import GroupJoin from '../pages/GroupJoin'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -53,6 +57,30 @@ export default new Router({
       component: Submit,
       meta:{ title:"提交作业"}
      
+    },
+    {
+      path: '/newgroup',
+      name: 'NewGroup',
+      component:NewGroup,
+      meta:{ title:"创建小组"}
+    },
+    {
+      path: '/groupdetails/:id',
+      name: 'GroupDetails',
+      component:GroupDetials,
+      meta:{ title:"组织信息"} 
+    },
+    {
+      path: '/groupcreate/:page',
+      name: 'GroupCreate',
+      component:GroupCreate,
+      meta:{ title:"我创建的组织"}
+    },
+    {
+      path: '/groupjoin/:page',
+      name: 'GroupJoin',
+      component:GroupJoin,
+      meta:{ title:"我加入的组织"}
     },
   ]
 })
