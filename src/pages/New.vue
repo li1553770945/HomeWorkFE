@@ -12,9 +12,10 @@
               <!-- <Option value="hypertext">超文本</Option> -->
             </Select>
           </FormItem>
-          <FormItem label="科目">
+          <FormItem label="科目"  prop="subject">
             <i-Input
-              v-model="formItem.subject"
+              v-model="formItem.subject" 
+             
               placeholder="请输入科目"
             ></i-Input>
           </FormItem>
@@ -76,6 +77,7 @@ export default {
         name: [
           { required: true, message: "该项必填", trigger: "change,blur" },
         ],
+        subject:[{required: true, message: "该项必填", trigger: "change,blur" }]
       }
     }
   },

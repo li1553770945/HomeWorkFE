@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Me from '../pages/Me'
 import Details from '../pages/Details'
 import MyHomeWork from '../pages/MyHomeWork'
+import MyHomeWorkCreate from '../pages/MyHomeWorkCreate'
 import New from '../pages/New'
 import Submit from '../pages/Submit'
 Vue.use(Router)
@@ -39,6 +40,12 @@ export default new Router({
       name: 'MyHomeWork',
       component: MyHomeWork,
       meta:{title:"我的作业"}
+    },
+    {
+      path: '/myhomeworkcreate/:page',
+      name: 'MyHomeWorkCreate',
+      component: MyHomeWorkCreate,
+      meta:{title:"我发布的作业"}
     },
     {
       path: '/submit/:work_id',

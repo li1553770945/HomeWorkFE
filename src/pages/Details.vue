@@ -101,7 +101,8 @@ export default {
       formItem: {
       },
       rule: {
-        name: [{ required: true, message: "该项必填", trigger: "change,blur" }],
+        name: [{ required: true, message: "该项必填", trigger: "change,blur" },],
+        subject:[{required: true, message: "该项必填", trigger: "change,blur" }]
       },
     };
   },
@@ -167,7 +168,7 @@ export default {
               } else {
                 var data = response.data;
                 if (data.err_code != 0) {
-                  this.$Message.error("提交失败" + data.error);
+                  this.$Message.error("提交失败," + data.error);
                   this.loading = false;
                 } else {
                   this.$Message.success("提交成功");
