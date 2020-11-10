@@ -4,6 +4,11 @@
       <Layout>
         <Content>
           <Form ref="form" :model="formItem" :rules="rule">
+             <FormItem label="唯一作业id">
+              <i-Input disabled
+                v-model="formItem.id"
+              ></i-Input>
+            </FormItem>
             <FormItem label="作业名" prop="name">
               <i-Input
                 v-model="formItem.name"
@@ -50,7 +55,19 @@
                 v-model="formItem.end_time"
               ></DatePicker>
             </FormItem>
-          </Form>
+            参与小组：
+            <List item-layout="vertical">
+                <ListItem v-for="item in formItem.groups" :key="item.id">
+                 
+                    <router-link :to="'/groupdetails/'+item.id">{{ item.name }}</router-link>
+                  
+                </ListItem>
+              </List>
+    
+          </Form >
+         
+         
+          
           <Poptip
             trigger="hover"
             content="您无权执行此操作"

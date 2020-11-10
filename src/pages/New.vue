@@ -2,7 +2,7 @@
   <div id="new">
     <Layout>
       <Content>
-        <Form ref="form" :model="formItem"  :rules="rule">
+        <Form ref="form" :model="formItem" :rules="rule">
           <FormItem label="作业名" prop="name">
             <i-Input v-model="formItem.name" placeholder="请输入名称"></i-Input>
           </FormItem>
@@ -12,10 +12,9 @@
               <!-- <Option value="hypertext">超文本</Option> -->
             </Select>
           </FormItem>
-          <FormItem label="科目"  prop="subject">
+          <FormItem label="科目" prop="subject">
             <i-Input
-              v-model="formItem.subject" 
-             
+              v-model="formItem.subject"
               placeholder="请输入科目"
             ></i-Input>
           </FormItem>
@@ -47,6 +46,30 @@
               v-model="formItem.end_time"
             ></DatePicker>
           </FormItem>
+          <FormItem label="选择参与组">
+            <CheckboxGroup
+              v-model="formItem.groups"
+              @on-change="change_check()"
+            >
+              <List item-layout="vertical">
+                <ListItem v-for="item in list_data" :key="item.id">
+                  <Checkbox :label="item.id">
+                    <span>{{ item.name }}</span>
+                  </Checkbox>
+                </ListItem>
+              </List>
+            </CheckboxGroup>
+
+            <div style="text-align: center">
+              <Page
+                :current="page"
+                :total="total"
+                :page-size="page_size"
+                @on-change="change_page"
+              />
+            </div>
+          </FormItem>
+
           <FormItem>
             <Button type="primary" @click="submit()" :loading="loading"
               >发布</Button
@@ -63,6 +86,10 @@ export default {
   name: "New",
   data() {
     return {
+      page_size: 1,
+      total: 0,
+      list_data: "",
+      page: 1,
       loading: false,
       formItem: {
         name: "",
@@ -72,17 +99,43 @@ export default {
         end_time: new Date(),
         member_can_know_donelist: "false",
         member_can_see_others: "false",
+        groups: [],
       },
       rule: {
-        name: [
+        name: [{ required: true, message: "该项必填", trigger: "change,blur" }],
+        subject: [
           { required: true, message: "该项必填", trigger: "change,blur" },
         ],
-        subject:[{required: true, message: "该项必填", trigger: "change,blur" }]
+      },
+    };
+  },
+  created() {
+    this.end = this.page_size;
+    this.$api.get(
+      "mygroupnum/",
+      {
+        status: "owner",
+      },
+      (response) => {
+        if (response.status != 200) {
+          this.$Message.error("请求失败，服务器错误");
+          this.$Message.error("" + response);
+        } else {
+          if (response.data.err_code == 0) {
+            this.total = response.data.data;
+          } else {
+            this.$Message.error("请求失败，" + response.data.error);
+          }
+        }
       }
-    }
+    );
+    this.getData();
   },
   methods: {
-     formatDate(UTCDateString) {
+    change_check() {
+      console.log(this.formItem.groups);
+    },
+    formatDate(UTCDateString) {
       if (!UTCDateString) {
         return "-";
       }
@@ -101,7 +154,28 @@ export default {
         year + "-" + mon + "-" + day + " " + hour + ":" + minute + ":" + second;
       return dateStr;
     },
-
+    getData() {
+      this.$api.get(
+        "mygroup/",
+        {
+          status: "owner",
+          start: (this.page - 1) * this.page_size + 1,
+          end: this.page * this.page_size,
+        },
+        (response) => {
+          if (response.status != 200) {
+            this.$Message.error("请求失败，服务器错误");
+            this.$Message.error("" + response);
+          } else {
+            if (response.data.err_code == 0) {
+              this.list_data = response.data.data;
+            } else {
+              this.$Message.error("请求失败，" + response.data.error);
+            }
+          }
+        }
+      );
+    },
     submit() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
@@ -114,8 +188,9 @@ export default {
               subject: this.formItem.subject,
               remark: this.formItem.remark,
               end_time: this.formatDate(this.formItem.end_time),
-              member_can_know_donelist:this.formItem.member_can_know_donelist,
+              member_can_know_donelist: this.formItem.member_can_know_donelist,
               member_can_see_others: this.formItem.member_can_see_others,
+              groups:this.formItem.groups
             },
             (response) => {
               if (response.status != 200) {
@@ -125,13 +200,13 @@ export default {
               } else {
                 var data = response.data;
                 if (data.err_code != 0) {
-                  this.$Message.error("提交失败" + data.error);
+                  this.$Message.error("提交失败，" + data.error);
                   this.loading = false;
                 } else {
                   this.$Message.success("提交成功");
                   this.loading = false;
-                  var id=response.data.data.id;
-                  this.$router.push('details/'+id)
+                  var id = response.data.data.id;
+                  this.$router.push("details/" + id);
                 }
               }
             }
@@ -140,6 +215,10 @@ export default {
           this.$Message.error("请更正信息后提交");
         }
       });
+    },
+    change_page(page) {
+      this.page = page;
+      this.getData();
     },
   },
 };
