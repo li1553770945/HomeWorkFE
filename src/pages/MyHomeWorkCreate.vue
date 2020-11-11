@@ -109,7 +109,7 @@ export default {
       return dateStr;
     },
     change_page(page) {
-      this.$router.push("/myhomework/" + page);
+      this.$router.push("/myhomeworkcreate/" + page);
     },
   },
 };
