@@ -4,7 +4,13 @@
       <Content>
         <List item-layout="vertical">
           <ListItem v-for="item in list_data" :key="item.id">
-            <ListItemMeta :title="item.name" />
+            <ListItemMeta>
+               <template slot="title">
+                <div v-if="item.done" style= 'color:green'> {{item.name }}(已完成) </div>
+                <div v-else style= 'color:red' > {{item.name }}(未完成) </div>
+               </template>
+            </ListItemMeta>
+            
             创建人:{{ item.owner }} <br />
             科目: {{ item.subject }} <br />
             截止时间：{{ formatDate(item.end_time) }}
