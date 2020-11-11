@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Menu mode="horizontal" active-name="1-1" @on-select="click">
+    <Menu mode="horizontal" active-name="1-2" @on-select="click">
       <Submenu name="1">
         <template slot="title"> 作业 </template>
         <router-link to="/myhomeworknotdone/1"
