@@ -47,6 +47,10 @@
             ></DatePicker>
           </FormItem>
           <FormItem label="选择参与组">
+         <Tooltip max-width="300" content="您创建作业选择组织，则组织内所有成员都视为参与本作业。若后续有成员加入组织，也会视为参与本次作业。当成员退出组织时，他不会退出本次作业，只是后续发布新作业已退出组员不再参加。">
+        
+        <Icon type="ios-help-circle" />
+    </Tooltip>
             <CheckboxGroup
               v-model="formItem.groups"
               @on-change="change_check()"
@@ -190,7 +194,7 @@ export default {
               end_time: this.formatDate(this.formItem.end_time),
               member_can_know_donelist: this.formItem.member_can_know_donelist,
               member_can_see_others: this.formItem.member_can_see_others,
-              groups:this.formItem.groups
+              groups: this.formItem.groups,
             },
             (response) => {
               if (response.status != 200) {

@@ -11,6 +11,7 @@ import GroupDetials from '../pages/GroupDetails'
 import GroupCreate from '../pages/GroupCreate'
 import GroupJoin from '../pages/GroupJoin'
 import GroupMembers from '../pages/GroupMembers'
+import MyHomeWorkNotDone from '../pages/MyHomeWorkNotDone'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -88,6 +89,12 @@ export default new Router({
       name: 'GroupMembers',
       component:GroupMembers,
       meta:{ title:"成员管理"} 
+    },
+    {
+      path: '/myhomeworknotdone/:page',
+      name: 'MyHomeWorkNotDone',
+      component: MyHomeWorkNotDone,
+      meta:{title:"未完成的作业"}
     },
   ]
 })

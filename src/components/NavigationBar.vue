@@ -3,12 +3,16 @@
     <Menu mode="horizontal" active-name="1-1" @on-select="click">
       <Submenu name="1">
         <template slot="title"> 作业 </template>
-        <router-link to="/"><MenuItem name="1-1">全部</MenuItem></router-link>
-        <router-link to="/myhomeworkcreate/1"
-          ><MenuItem name="1-2">我发布的</MenuItem></router-link
+        <router-link to="/myhomeworknotdone/1"
+          ><MenuItem name="1-1">未完成</MenuItem></router-link
         >
+        <router-link to="/"><MenuItem name="1-2">我参与的</MenuItem></router-link>
+        <router-link to="/myhomeworkcreate/1"
+          ><MenuItem name="1-3">我发布的</MenuItem></router-link
+        >
+
         <router-link to="/new"
-          ><MenuItem name="1-3">发布</MenuItem></router-link
+          ><MenuItem name="1-4 ">发布</MenuItem></router-link
         >
       </Submenu>
       <Submenu name="2">
@@ -28,7 +32,7 @@
       <!-- 如果没有登录 -->
       <div id="login-button" v-if="!logined">
         <Button @click="login">登陆</Button>
-         <Button @click="register">注册</Button>
+        <Button @click="register">注册</Button>
       </div>
       <login-modal
         :show_parent="show_login"
@@ -56,7 +60,7 @@
   </div>
 </template>
 <script>
-import JoinGroup from './JoinGroup.vue';
+import JoinGroup from "./JoinGroup.vue";
 import LoginModal from "./LoginModal.vue";
 import RegisterModal from "./RegisterModal.vue";
 //import JoinGroup from "./JoinGroup.vue"
@@ -64,8 +68,8 @@ export default {
   name: "NavigationBar",
   components: {
     "login-modal": LoginModal,
-    "register-modal":RegisterModal,
-    "join-modal":JoinGroup
+    "register-modal": RegisterModal,
+    "join-modal": JoinGroup,
   },
   data() {
     return {
@@ -76,8 +80,8 @@ export default {
       timer_login: "1",
       timer_join: "2",
       name: "",
-      show_register:false,
-      timer_register:"3",
+      show_register: false,
+      timer_register: "3",
     };
   },
   created: function () {
@@ -112,7 +116,7 @@ export default {
       }
     },
     joinClosed(params) {
-      params
+      params;
       this.show_join = false;
     },
     register() {
@@ -122,7 +126,6 @@ export default {
     registerClosed(params) {
       var register_status = params.registered;
       if (register_status == true) {
-
         this.show_register = false;
       }
     },

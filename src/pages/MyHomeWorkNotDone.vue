@@ -1,5 +1,5 @@
 <template>
-  <div id="homework-create">
+  <div id="homework-not-done">
     <Layout>
       <Content>
         <List item-layout="vertical">
@@ -42,7 +42,7 @@ export default {
     this.$api.get(
       "myhomeworknum/",
       {
-        status: "owner",
+        status: "notdone",
       },
       (response) => {
         if (response.status != 200) {
@@ -71,7 +71,7 @@ export default {
       this.$api.get(
         "myhomework/",
         {
-          status: "owner",
+          status: "notdone",
           start: (this.page - 1) * this.page_size + 1,
           end: this.page * this.page_size,
         },
