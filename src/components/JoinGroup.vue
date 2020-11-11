@@ -75,20 +75,15 @@ export default {
                   this.loading = false;
                 } else {
                   data = data.data;
-                  if (data.result == true) {
-                    this.$Message.success("加入成功");
-                    this.show = false;
-                    this.$emit("joinClosed");
-                  } else {
-                    this.loading = false;
-                    this.$Message.error(data.error);
-                  }
+                  this.$Message.success("加入成功");
+                  this.show = false;
+                  this.$emit("joinClosed");
                 }
               }
             }
           );
         } else {
-           this.$Message.error("请更正信息后提交");
+          this.$Message.error("请更正信息后提交");
         }
       });
     },
