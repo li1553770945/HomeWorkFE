@@ -45,11 +45,21 @@ export default {
       },
       rule: {
         name: [{ required: true, message: "该项必填", trigger: "change,blur" }],
-        subject: [
-          { required: true, message: "该项必填", trigger: "change,blur" },
-        ],
+        
         password: [
           { required: true, message: "该项必填", trigger: "change,blur" },
+          { validator: (rule, value, callback) => {
+              var reg = new RegExp(
+                "^[0-9a-zA-Z]{6,18}$"
+              );
+              if (!reg.test(value)) {
+                callback(true);
+              } else {
+                callback();
+              }
+            },
+            message: "密码必须为6-18位，只能包括数字、字母",
+            trigger: "change,blur"},
         ],
       },
     };
