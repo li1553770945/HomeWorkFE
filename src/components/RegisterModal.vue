@@ -53,14 +53,14 @@ export default {
           { required: true, message: "请输入学号", trigger: "change,blur" },
           {
             validator: (rule, value, callback) => {
-              var reg = new RegExp("^[a-zA-Z0-9]{5,15}$");
+              var reg = new RegExp("^[A-Z0-9]{5,15}$");
               if (!reg.test(value)) {
                 callback(true);
               } else {
                 callback();
               }
             },
-            message: "用户名只能包括数字、字母，且长度必须在5-15位",
+            message: "学号只能包括数字、大写字母，且长度必须在5-15位",
             trigger: "change,blur"
           }
         ],

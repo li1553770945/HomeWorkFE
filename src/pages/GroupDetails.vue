@@ -15,7 +15,7 @@
           <FormItem label="加入密码" prop="password">
             <i-Input
               v-model="formItem.password"
-              placeholder="请输组织加入密码"
+              placeholder="请输入组织加入密码"
             ></i-Input>
           </FormItem>
           <FormItem label="说明（可不填）">

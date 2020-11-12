@@ -17,6 +17,7 @@
             截止时间：{{ formatDate(item.end_time) }}
             <template slot="action">
               <Button :to="'../details/' + item.id">详细信息</Button>
+              <Button @click="toSubmit(item.id)">提交</Button>
             </template>
           </ListItem>
         </List>
@@ -95,6 +96,10 @@ export default {
           }
         }
       );
+    },
+    toSubmit(id)
+    {
+      this.$router.push('/submit/'+id);
     },
     formatDate(UTCDateString) {
       if (!UTCDateString) {
