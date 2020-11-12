@@ -1,7 +1,9 @@
 <template>
   <div id="submit">
     <br />
-    <h1 style="font-family: '微软雅黑'">上传作业到 {{ work.work_name }}</h1>
+    <h1 style="font-family: '微软雅黑'">
+      上传文件到作业：{{ work.work_name }}
+    </h1>
     <Upload
       ref="upload"
       :disabled="work == ''"
@@ -20,18 +22,18 @@
         <p>点击或拖拽文件到此处</p>
       </div>
     </Upload>
-    <Tooltip trigger="hover" content="点击下载">
-      <a
-        ><h2 v-if="work.done" @click="download()">
-          已上传文件{{ work.file_name }}
-        </h2></a
-      >
-    </Tooltip>
-    <h2 v-if="!work.done">您还未上传过</h2>
+    <div v-if="work.done">
+      已上传文件:
+        <a @click="download()" >{{ work.file_name }} </a>
+      <br />
+      {{ this.formatDate(work.upload_time) }} 上传
+    </div>
+    <h3 v-if="!work.done">您还未上传过</h3>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "Submit",
   data() {
@@ -77,7 +79,44 @@ export default {
       this.$refs.upload.post(upload_file);
       return false;
     },
-    download() {},
+    download() {
+      axios
+        .get("download/?work_id=" + String(this.work_id), {
+          responseType: "blob",
+        })
+        .then((response) => {
+          var response_type = response.headers["content-type"];
+          if (response_type == "application/octet-stream") {
+            var blob = new Blob([response.data]);
+            if ("download" in document.createElement("a")) {
+              //支持a标签download的浏览器
+              const link = document.createElement("a"); //创建a标签
+              var fileName = this.work.file_name;
+              link.download = fileName; //a标签添加属性
+              link.style.display = "none";
+              link.href = URL.createObjectURL(blob);
+              document.body.appendChild(link);
+              link.click(); //执行下载
+              URL.revokeObjectURL(link.href); //释放url
+              document.body.removeChild(link); //释放标签
+            } else {
+              navigator.msSaveBlob(blob, fileName);
+            }
+          } else {
+            this.$api.get(
+              "download/",
+              { work_id: this.work_id },
+              (response) => {
+                this.$Message.error(response.data.error);
+              }
+            );
+          }
+        })
+        .catch((e) => {
+          this.$Message.error("下载失败，服务器错误");
+          this.$Message.error(e.message);
+        });
+    },
     exceededMaxsize(file, fileList) {
       file;
       fileList;
@@ -98,6 +137,25 @@ export default {
       file, fileList;
       this.$Message.error("上传失败," + error);
       this.$Loading.error();
+    },
+    formatDate(UTCDateString) {
+      if (!UTCDateString) {
+        return "-";
+      }
+      function formatFunc(str) {
+        //格式化显示
+        return str > 9 ? str : "0" + str;
+      }
+      var date2 = new Date(UTCDateString); //这步是关键
+      var year = date2.getFullYear();
+      var mon = formatFunc(date2.getMonth() + 1);
+      var day = formatFunc(date2.getDate());
+      var hour = formatFunc(date2.getHours());
+      var minute = formatFunc(date2.getMinutes());
+      var second = formatFunc(date2.getSeconds());
+      var dateStr =
+        year + "-" + mon + "-" + day + " " + hour + ":" + minute + ":" + second;
+      return dateStr;
     },
   },
 };
