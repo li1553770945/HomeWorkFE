@@ -11,7 +11,7 @@
       :data="{ work_id: this.work_id }"
       type="drag"
       action="submit/"
-      :max-size="102400"
+      :max-size="10240"
       :on-exceeded-size="exceededMaxsize"
       :on-success="handleSuccess"
       :on-error="handleError"
@@ -120,7 +120,8 @@ export default {
     exceededMaxsize(file, fileList) {
       file;
       fileList;
-      this.$Message.error("文件最大为100MB");
+      this.$Message.error("文件最大为10MB");
+      this.$Loading.error();
     },
     handleSuccess(response, file, fileList) {
       if (response.err_code == 0) {
