@@ -12,6 +12,7 @@ import GroupCreate from '../pages/GroupCreate'
 import GroupJoin from '../pages/GroupJoin'
 import GroupMembers from '../pages/GroupMembers'
 import MyHomeWorkNotDone from '../pages/MyHomeWorkNotDone'
+import Export from '../pages/Export'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -95,6 +96,12 @@ export default new Router({
       name: 'MyHomeWorkNotDone',
       component: MyHomeWorkNotDone,
       meta:{title:"未完成的作业"}
+    },
+    {
+      path: '/export/:work_id',
+      name: 'Export',
+      component:Export,
+      meta:{ title:"导出"} 
     },
   ]
 })

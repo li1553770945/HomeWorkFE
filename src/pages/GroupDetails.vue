@@ -12,7 +12,7 @@
               placeholder="请输入组织名"
             ></i-Input>
           </FormItem>
-          <FormItem label="加入密码" prop="password">
+          <FormItem label="加入密码(该项对成员不可见）" prop="password">
             <i-Input
               v-model="formItem.password"
               placeholder="请输入组织加入密码"

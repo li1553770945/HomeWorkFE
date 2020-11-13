@@ -10,6 +10,7 @@
             截止时间：{{ formatDate(item.end_time) }}
             <template slot="action">
               <Button :to="'../details/' + item.id">详细信息</Button>
+              <Button :to="'../export/' + item.id">完成情况</Button>
             </template>
           </ListItem>
         </List>
