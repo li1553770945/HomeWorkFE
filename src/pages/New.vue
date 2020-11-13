@@ -131,7 +131,7 @@ export default {
     this.$api.get(
       "mygroupnum/",
       {
-        status: "owner",
+        status: "can_use",
       },
       (response) => {
         if (response.status != 200) {
@@ -175,7 +175,7 @@ export default {
       this.$api.get(
         "mygroup/",
         {
-          status: "owner",
+          status: "can_use",
           start: (this.page - 1) * this.page_size + 1,
           end: this.page * this.page_size,
         },

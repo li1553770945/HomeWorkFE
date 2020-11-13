@@ -18,6 +18,12 @@
               placeholder="请输入组织加入密码"
             ></i-Input>
           </FormItem>
+          <FormItem label=" 成员可用该组织创建作业" prop="member_can_use">
+            <Tooltip max-width="300" content="对于常用、其他人可用组织，建议开启此功能。例如一个班级，如果开启此功能，所有人都可以用此组织创建作业，否则每人都要创建一个班级组织">
+              <Icon type="ios-help-circle" />
+            </Tooltip>
+            <i-switch v-model="formItem.member_can_use" />
+          </FormItem>
           <FormItem label="说明（可不填）">
             <i-Input
               type="textarea"
@@ -161,6 +167,7 @@ export default {
               name: this.formItem.name,
               desc: this.formItem.desc,
               password: this.formItem.password,
+              member_can_user:this.formItem.member_can_user
             },
             (response) => {
               if (response.status != 200) {
