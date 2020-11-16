@@ -30,7 +30,7 @@ export default {
   name: "GroupCreate",
   data() {
     return {
-      page_size: 1,
+      page_size: 10,
       total: 0,
       list_data: "",
       page: Number(this.$route.params.page),
