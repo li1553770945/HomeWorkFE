@@ -94,73 +94,103 @@ export default {
     },
     exportAll() {
       this.export_loading = true;
-      // this.$api.get(
-      //   "export/",
-      //   { work_id: this.work_id, status: "status" },
-      //   (response) => {
-      //     var data = response.data;
-      //     if (data.err_code == 0) {
-      //       this.$Message.success("请求成功，后台正在处理，请耐心等待");
-      //     } else {
-      //       this.$Message.error("请求失败");
-      //       this.$Message.error("" + data.error);
-      //       this.export_loading = false;
-      //       return;
-      //     }
-      //   }
-      // );
-      // var done = false;
-      // while (!done) {
-      //   setTimeout(function () {
-      //     this.$api.get(
-      //       "export/",
-      //       { work_id: this.work_id, status: "status" },
-      //       (response) => {
-      //         var data = response.data;
-      //         if (data.err_code == 0) {
-      //           done = data.data.done;
-      //         } else {
-      //           this.$Message.error("请求失败，服务器错误");
-      //           this.$Message.error("" + data.error);
-      //           this.export_loading = false;
-      //           return;
-      //         }
-      //       }
-      //     );
-      //   }, 10000);
-      // }
-
-      axios
-        .get("export/?work_id=" + String(this.work_id), {
-          responseType: "blob",
-        })
-        .then((response) => {
-          var file_name = this.work.name + ".zip";
-          var response_type = response.headers["content-type"];
-          if (response_type == "application/octet-stream") {
-            var blob = new Blob([response.data]);
-            if ("download" in document.createElement("a")) {
-              //支持a标签download的浏览器
-              const link = document.createElement("a"); //创建a标签
-              link.download = file_name; //a标签添加属性
-              link.style.display = "none";
-              link.href = URL.createObjectURL(blob);
-              document.body.appendChild(link);
-              link.click(); //执行下载
-              URL.revokeObjectURL(link.href); //释放url
-              document.body.removeChild(link); //释放标签
-            } else {
-              navigator.msSaveBlob(blob, file_name);
-            }
+      this.$api.get(
+        "export/",
+        { work_id: this.work_id, status: "status" },
+        (response) => {
+          var data = response.data;
+          if (data.err_code == 0) {
+            this.$Message.success("请求成功，后台正在处理，请耐心等待");
           } else {
-            this.$Message.error("导出失败，未知错误");
+            this.$Message.error("请求失败");
+            this.$Message.error("" + data.error);
+            this.export_loading = false;
+            return;
           }
-        })
-        .catch((e) => {
-          this.$Message.error("下载失败，服务器错误");
-          this.$Message.error(e.message);
+        }
+      );
+      this.$worker
+        .run(
+          (work_id) => {
+            var done = false;
+            while (!done) {
+              
+              var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
+              httpRequest.open(
+                "GET",
+                "http://localhost:8080/export/?work_id=" +
+                  String(work_id) +
+                  "&status=status",
+                false
+              );
+              httpRequest.send();
+              if (httpRequest.readyState == 4) {
+                if (httpRequest.status == 200) {
+                  var json = JSON.parse(String(httpRequest.responseText));
+                  if (json["err_code"] != 0) {
+                    return json["error"];
+                  } else {
+                    if (json["done"]) {
+                      return 1;
+                    } else {
+                      var now = new Date();
+                      var exitTime = now.getTime() + 2000;
+                      console.log(exitTime);
+                      console.log(now)
+                      while (now.getTime() < exitTime) {
+                        now = new Date();
+                      }
+                    }
+                  }
+                } else {
+                  return "请求失败，服务器错误";
+                }
+              }
+              else
+              {
+                return "网络错误";
+              }
+            }
+          },
+          [this.work_id]
+        )
+        .then((res) => {
+          if (res == 1) {
+            axios
+              .get("export/?work_id=" + String(this.work_id), {
+                responseType: "blob",
+              })
+              .then((response) => {
+                var file_name = this.work.name + ".zip";
+                var response_type = response.headers["content-type"];
+                if (response_type == "application/octet-stream") {
+                  var blob = new Blob([response.data]);
+                  if ("download" in document.createElement("a")) {
+                    //支持a标签download的浏览器
+                    const link = document.createElement("a"); //创建a标签
+                    link.download = file_name; //a标签添加属性
+                    link.style.display = "none";
+                    link.href = URL.createObjectURL(blob);
+                    document.body.appendChild(link);
+                    link.click(); //执行下载
+                    URL.revokeObjectURL(link.href); //释放url
+                    document.body.removeChild(link); //释放标签
+                  } else {
+                    navigator.msSaveBlob(blob, file_name);
+                  }
+                } else {
+                  this.$Message.error("导出失败，未知错误");
+                }
+              })
+              .catch((e) => {
+                this.$Message.error("下载失败，服务器错误");
+                this.$Message.error(e.message);
+              });
+          } else if (res != 0) {
+            this.$Message.error(res);
+          }
+          this.export_loading = false;
         });
-      this.export_loading = false;
     },
     download(item) {
       var user_id = item.owner.id;
@@ -211,8 +241,7 @@ export default {
                     } else {
                       navigator.msSaveBlob(blob, file_name);
                     }
-                  }
-                  else{
+                  } else {
                     this.$Message.error("导出失败，未知错误");
                   }
                 })

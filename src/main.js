@@ -6,7 +6,9 @@ import 'view-design/dist/styles/iview.css';
 import router from './router'
 import VueRouter from 'vue-router';
 import VueWechatTitle from'vue-wechat-title';
+import VueWorker from 'vue-worker';
 
+Vue.use(VueWorker);
 Vue.use(VueWechatTitle);
 Vue.prototype.$api = Api;
 Vue.use(ViewUI);

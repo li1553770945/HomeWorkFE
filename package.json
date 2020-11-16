@@ -13,7 +13,8 @@
     "view-design": "^4.4.0",
     "vue": "^2.6.11",
     "vue-router": "^3.4.8",
-    "vue-wechat-title": "^2.0.7"
+    "vue-wechat-title": "^2.0.7",
+    "vue-worker": "^1.2.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
