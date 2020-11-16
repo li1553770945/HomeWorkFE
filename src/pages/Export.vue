@@ -1,7 +1,9 @@
 <template>
   <div id="export">
-    <h2>作业“{{work.name}}”的完成情况</h2>  
-    <Button @click="exportAll()" type="primary">一键导出</Button>
+    <h2>作业“{{ work.name }}”的完成情况</h2>
+    <Button @click="exportAll()" type="primary" :loading="export_loading"
+      >一键导出</Button
+    >
     <List item-layout="vertical">
       <ListItem v-for="item in list_data" :key="item.id">
         <template v-if="item.done" slot="action">
@@ -37,6 +39,7 @@ export default {
       work_id: this.$route.params.work_id,
       list_data: "",
       work: "",
+      export_loading: false,
     };
   },
   watch: {
@@ -90,12 +93,49 @@ export default {
       );
     },
     exportAll() {
+      this.export_loading = true;
+      // this.$api.get(
+      //   "export/",
+      //   { work_id: this.work_id, status: "status" },
+      //   (response) => {
+      //     var data = response.data;
+      //     if (data.err_code == 0) {
+      //       this.$Message.success("请求成功，后台正在处理，请耐心等待");
+      //     } else {
+      //       this.$Message.error("请求失败");
+      //       this.$Message.error("" + data.error);
+      //       this.export_loading = false;
+      //       return;
+      //     }
+      //   }
+      // );
+      // var done = false;
+      // while (!done) {
+      //   setTimeout(function () {
+      //     this.$api.get(
+      //       "export/",
+      //       { work_id: this.work_id, status: "status" },
+      //       (response) => {
+      //         var data = response.data;
+      //         if (data.err_code == 0) {
+      //           done = data.data.done;
+      //         } else {
+      //           this.$Message.error("请求失败，服务器错误");
+      //           this.$Message.error("" + data.error);
+      //           this.export_loading = false;
+      //           return;
+      //         }
+      //       }
+      //     );
+      //   }, 10000);
+      // }
+
       axios
         .get("export/?work_id=" + String(this.work_id), {
           responseType: "blob",
         })
         .then((response) => {
-          var file_name = this.work.name+'.zip';
+          var file_name = this.work.name + ".zip";
           var response_type = response.headers["content-type"];
           if (response_type == "application/octet-stream") {
             var blob = new Blob([response.data]);
@@ -113,62 +153,77 @@ export default {
               navigator.msSaveBlob(blob, file_name);
             }
           } else {
-            this.$api.get("export/", { work_id: this.work_id }, (response) => {
-              this.$Message.error(response.data.error);
-            });
+            this.$Message.error("导出失败，未知错误");
           }
         })
         .catch((e) => {
           this.$Message.error("下载失败，服务器错误");
           this.$Message.error(e.message);
         });
+      this.export_loading = false;
     },
     download(item) {
       var user_id = item.owner.id;
       var file_name = item.file_name;
-      axios
-        .get(
-          "export/?work_id=" +
-            String(this.work_id) +
-            "&user_id=" +
-            String(user_id) +
-            "&file_name=" +
-            String(file_name),
-          {
-            responseType: "blob",
-          }
-        )
-        .then((response) => {
-          var response_type = response.headers["content-type"];
-          if (response_type == "application/octet-stream") {
-            var blob = new Blob([response.data]);
-            if ("download" in document.createElement("a")) {
-              //支持a标签download的浏览器
-              const link = document.createElement("a"); //创建a标签
-              link.download = file_name; //a标签添加属性
-              link.style.display = "none";
-              link.href = URL.createObjectURL(blob);
-              document.body.appendChild(link);
-              link.click(); //执行下载
-              URL.revokeObjectURL(link.href); //释放url
-              document.body.removeChild(link); //释放标签
-            } else {
-              navigator.msSaveBlob(blob, file_name);
-            }
+      this.$api.get(
+        "export/",
+        {
+          work_id: this.work_id,
+          user_id: user_id,
+          file_name: file_name,
+          status: "status",
+        },
+        (response) => {
+          if (response.status != 200) {
+            this.$Message.error("请求失败，服务器错误");
+            this.$Message.error("" + response);
           } else {
-            this.$api.get(
-              "export/",
-              { work_id: this.work_id, user_id: user_id, file_name: file_name },
-              (response) => {
-                this.$Message.error(response.data.error);
-              }
-            );
+            var data = response.data;
+            if (data.err_code != 0) {
+              this.$Message.error(data.error);
+            } else {
+              axios
+                .get(
+                  "export/?work_id=" +
+                    String(this.work_id) +
+                    "&user_id=" +
+                    String(user_id) +
+                    "&file_name=" +
+                    String(file_name),
+                  {
+                    responseType: "blob",
+                  }
+                )
+                .then((response) => {
+                  var response_type = response.headers["content-type"];
+                  if (response_type == "application/octet-stream") {
+                    var blob = new Blob([response.data]);
+                    if ("download" in document.createElement("a")) {
+                      //支持a标签download的浏览器
+                      const link = document.createElement("a"); //创建a标签
+                      link.download = file_name; //a标签添加属性
+                      link.style.display = "none";
+                      link.href = URL.createObjectURL(blob);
+                      document.body.appendChild(link);
+                      link.click(); //执行下载
+                      URL.revokeObjectURL(link.href); //释放url
+                      document.body.removeChild(link); //释放标签
+                    } else {
+                      navigator.msSaveBlob(blob, file_name);
+                    }
+                  }
+                  else{
+                    this.$Message.error("导出失败，未知错误");
+                  }
+                })
+                .catch((e) => {
+                  this.$Message.error("下载失败，服务器错误");
+                  this.$Message.error(e.message);
+                });
+            }
           }
-        })
-        .catch((e) => {
-          this.$Message.error("下载失败，服务器错误");
-          this.$Message.error(e.message);
-        });
+        }
+      );
     },
     formatDate(UTCDateString) {
       if (!UTCDateString) {

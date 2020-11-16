@@ -24,7 +24,7 @@
     </Upload>
     <div v-if="work.done">
       已上传文件:
-        <a @click="download()" >{{ work.file_name }} </a>
+      <a @click="download()">{{ work.file_name }} </a>
       <br />
       {{ this.formatDate(work.upload_time) }} 上传
     </div>
@@ -80,42 +80,57 @@ export default {
       return false;
     },
     download() {
-      axios
-        .get("download/?work_id=" + String(this.work_id), {
-          responseType: "blob",
-        })
-        .then((response) => {
-          var response_type = response.headers["content-type"];
-          if (response_type == "application/octet-stream") {
-            var blob = new Blob([response.data]);
-            if ("download" in document.createElement("a")) {
-              //支持a标签download的浏览器
-              const link = document.createElement("a"); //创建a标签
-              var fileName = this.work.file_name;
-              link.download = fileName; //a标签添加属性
-              link.style.display = "none";
-              link.href = URL.createObjectURL(blob);
-              document.body.appendChild(link);
-              link.click(); //执行下载
-              URL.revokeObjectURL(link.href); //释放url
-              document.body.removeChild(link); //释放标签
-            } else {
-              navigator.msSaveBlob(blob, fileName);
-            }
+      this.$api.get(
+        "download/",
+        {
+          work_id: this.work_id,
+          status: "status",
+        },
+        (response) => {
+          if (response.status != 200) {
+            this.$Message.error("请求失败，服务器错误");
+            this.$Message.error("" + response);
           } else {
-            this.$api.get(
-              "download/",
-              { work_id: this.work_id },
-              (response) => {
-                this.$Message.error(response.data.error);
-              }
-            );
+            var data = response.data;
+            if (data.err_code != 0) {
+              this.$Message.error(data.error);
+            } else {
+              axios
+                .get("download/?work_id=" + String(this.work_id), {
+                  responseType: "blob",
+                })
+                .then((response) => {
+                  var file_name = this.work.file_name;
+                  var response_type = response.headers["content-type"];
+                  if (response_type == "application/octet-stream") {
+                    var blob = new Blob([response.data]);
+                    if ("download" in document.createElement("a")) {
+                      //支持a标签download的浏览器
+                      const link = document.createElement("a"); //创建a标签
+                      link.download = file_name; //a标签添加属性
+                      link.style.display = "none";
+                      link.href = URL.createObjectURL(blob);
+                      document.body.appendChild(link);
+                      link.click(); //执行下载
+                      URL.revokeObjectURL(link.href); //释放url
+                      document.body.removeChild(link); //释放标签
+                    } else {
+                      navigator.msSaveBlob(blob, file_name);
+                    }
+                  }
+                  else
+                  {
+                    this.$Message.error("下载失败，未知错误");
+                  }
+                })
+                .catch((e) => {
+                  this.$Message.error("下载失败，服务器错误");
+                  this.$Message.error(e.message);
+                });
+            }
           }
-        })
-        .catch((e) => {
-          this.$Message.error("下载失败，服务器错误");
-          this.$Message.error(e.message);
-        });
+        }
+      );
     },
     exceededMaxsize(file, fileList) {
       file;
