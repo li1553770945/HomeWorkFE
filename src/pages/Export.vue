@@ -118,7 +118,7 @@ export default {
               var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
               httpRequest.open(
                 "GET",
-                "http://localhost:8080/export/?work_id=" +
+                "http://117.51.141.73:8080/api/export/?work_id=" +
                   String(work_id) +
                   "&status=status",
                 false

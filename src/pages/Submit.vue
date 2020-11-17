@@ -10,7 +10,7 @@
       :before-upload="handleUpload"
       :data="{ work_id: this.work_id }"
       type="drag"
-      action="submit/"
+      action="api/submit/"
       :max-size="10240"
       :on-exceeded-size="exceededMaxsize"
       :on-success="handleSuccess"
