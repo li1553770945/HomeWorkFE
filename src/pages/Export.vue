@@ -214,7 +214,7 @@ export default {
             } else {
               axios
                 .get(
-                  "export/?work_id=" +
+                  "api/export/?work_id=" +
                     String(this.work_id) +
                     "&user_id=" +
                     String(user_id) +

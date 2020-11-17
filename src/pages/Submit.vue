@@ -96,7 +96,7 @@ export default {
               this.$Message.error(data.error);
             } else {
               axios
-                .get("download/?work_id=" + String(this.work_id), {
+                .get("api/download/?work_id=" + String(this.work_id), {
                   responseType: "blob",
                 })
                 .then((response) => {
