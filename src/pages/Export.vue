@@ -109,16 +109,17 @@ export default {
           }
         }
       );
+      const myAppConfig = window.appConfig;
+      var baseURL = myAppConfig.baseURL;
       this.$worker
         .run(
-          (work_id) => {
+          (work_id,baseURL) => {
             var done = false;
             while (!done) {
-              
-              var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
+              var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象 
               httpRequest.open(
                 "GET",
-                "http://117.51.141.73:8080/api/export/?work_id=" +
+                baseURL+"export/?work_id="+
                   String(work_id) +
                   "&status=status",
                 false
@@ -130,13 +131,12 @@ export default {
                   if (json["err_code"] != 0) {
                     return json["error"];
                   } else {
-                    if (json["done"]) {
+                    if (json['data']["done"]) {
+                      done = true;
                       return 1;
                     } else {
                       var now = new Date();
                       var exitTime = now.getTime() + 2000;
-                      console.log(exitTime);
-                      console.log(now)
                       while (now.getTime() < exitTime) {
                         now = new Date();
                       }
@@ -152,12 +152,12 @@ export default {
               }
             }
           },
-          [this.work_id]
+          [this.work_id,baseURL]
         )
         .then((res) => {
           if (res == 1) {
             axios
-              .get("export/?work_id=" + String(this.work_id), {
+              .get("api/export/?work_id=" + String(this.work_id), {
                 responseType: "blob",
               })
               .then((response) => {
@@ -179,7 +179,7 @@ export default {
                     navigator.msSaveBlob(blob, file_name);
                   }
                 } else {
-                  this.$Message.error("导出失败，未知错误");
+                  this.$Message.error("导出失败，未知错误，请您刷新页面重试");
                 }
               })
               .catch((e) => {
