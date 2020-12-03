@@ -141,6 +141,7 @@ export default {
   },
   methods: {
     get() {
+      this.$Loading.start();
       this.$api.get(
         "homework/",
         {
@@ -161,11 +162,14 @@ export default {
               if (data.can_submit_after_end)
                 this.formItem.can_submit_after_end = "true";
               else this.formItem.can_submit_after_end = "false";
+              this.$Loading.finish()
             } else {
               this.$Message.error(data.error);
+              this.$Loading.error();
             }
           } else {
             this.$Message.error("服务器错误" + response.data.err_code);
+            this.$Loading.error();
           }
         }
       );

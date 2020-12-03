@@ -114,6 +114,7 @@ export default {
   },
   methods: {
     get() {
+      this.$Loading.start()
       this.$api.get(
         "group/",
         {
@@ -125,11 +126,14 @@ export default {
             if (data.err_code == 0) {
               data = data.data;
               this.formItem = data;
+              this.$Loading.finish()
             } else {
               this.$Message.error(data.error);
+              this.$Loading.error();
             }
           } else {
             this.$Message.error("服务器错误" + response.data.err_code);
+            this.$Loading.error();
           }
         }
       );

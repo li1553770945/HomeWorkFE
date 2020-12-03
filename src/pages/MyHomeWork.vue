@@ -5,12 +5,14 @@
         <List item-layout="vertical">
           <ListItem v-for="item in list_data" :key="item.id">
             <ListItemMeta>
-               <template slot="title">
-                <div v-if="item.done" style= 'color:green'> {{item.name }}(已完成) </div>
-                <div v-else style= 'color:red' > {{item.name }}(未完成) </div>
-               </template>
+              <template slot="title">
+                <div v-if="item.done" style="color: green">
+                  {{ item.name }}(已完成)
+                </div>
+                <div v-else style="color: red">{{ item.name }}(未完成)</div>
+              </template>
             </ListItemMeta>
-            
+
             创建人:{{ item.owner }} <br />
             科目: {{ item.subject }} <br />
             截止时间：{{ formatDate(item.end_time) }}
@@ -22,7 +24,7 @@
         </List>
         <div style="text-align: center">
           <Page
-          :current="page"
+            :current="page"
             :total="total"
             :page-size="page_size"
             @on-change="change_page"
@@ -45,36 +47,42 @@ export default {
     };
   },
   created() {
-    this.end = this.page_size;
-    this.$api.get(
-      "myhomeworknum/",
-      {
-        status: "member",
-      },
-      (response) => {
-        if (response.status != 200) {
-          this.$Message.error("请求失败，服务器错误");
-          this.$Message.error("" + response);
-        } else {
-          if (response.data.err_code == 0) {
-            this.total = response.data.data;
-          } else {
-            this.$Message.error("请求失败，" + response.data.error);
-          }
-        }
-      }
-    );
     this.getData();
   },
   watch: {
-    $route(to,from) {
-      this.page =Number(to.params.page);
+    $route(to, from) {
+      this.page = Number(to.params.page);
       this.getData();
-      from
+      from;
     },
   },
   methods: {
     getData() {
+      this.$Loading.start()
+      this.end = this.page_size;
+      this.$api.get(
+        "myhomeworknum/",
+        {
+          status: "member",
+        },
+        (response) => {
+          if (response.status != 200) {
+            this.$Message.error("请求失败，服务器错误");
+            this.$Message.error("" + response);
+            this.$Loading.error();
+            return;
+          } else {
+            if (response.data.err_code == 0) {
+              this.total = response.data.data;
+
+            } else {
+              this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
+              return;
+            }
+          }
+        }
+      );
       this.$api.get(
         "myhomework/",
         {
@@ -86,19 +94,21 @@ export default {
           if (response.status != 200) {
             this.$Message.error("请求失败，服务器错误");
             this.$Message.error("" + response);
+            this.$Loading.error();
           } else {
             if (response.data.err_code == 0) {
               this.list_data = response.data.data;
+              this.$Loading.finish();
             } else {
               this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
             }
           }
         }
       );
     },
-     toSubmit(id)
-    {
-      this.$router.push('/submit/'+id);
+    toSubmit(id) {
+      this.$router.push("/submit/" + id);
     },
     formatDate(UTCDateString) {
       if (!UTCDateString) {

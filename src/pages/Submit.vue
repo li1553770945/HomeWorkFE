@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     get() {
+      this.$Loading.start();
       this.$api.get(
         "submit/",
         {
@@ -65,11 +66,15 @@ export default {
             if (data.err_code == 0) {
               data = data.data;
               this.work = data;
+              this.$Loading.finish();
             } else {
               this.$Message.error(data.error);
+              this.$Loading.error();
+              return;
             }
           } else {
             this.$Message.error("服务器错误" + response.data.err_code);
+            return;
           }
         }
       );

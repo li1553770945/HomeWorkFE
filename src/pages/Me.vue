@@ -51,6 +51,7 @@ export default {
     },
   },
   created: function() {
+    this.$Loading.start()
     this.$api.get("me/", {}, response => {
       if (response.status == 200) {
         var data = response.data;
@@ -59,12 +60,15 @@ export default {
           this.user = data;
           this.user.last_login = this.formatDate(new Date(data.last_login));
           this.user.date_joined = this.formatDate(new Date(data.date_joined));
+          this.$Loading.finish();
         } else {
           this.$Message.error(data.error);
+          this.$Loading.error();
         }
       } else {
         this.$Message.error("抱歉，发生错误");
         this.$Message.error("" + response);
+        this.$Loading.error();
       }
     });
   }

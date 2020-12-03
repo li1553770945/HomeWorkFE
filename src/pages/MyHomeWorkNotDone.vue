@@ -46,25 +46,6 @@ export default {
     };
   },
   created() {
-    this.end = this.page_size;
-    this.$api.get(
-      "myhomeworknum/",
-      {
-        status: "notdone",
-      },
-      (response) => {
-        if (response.status != 200) {
-          this.$Message.error("请求失败，服务器错误");
-          this.$Message.error("" + response);
-        } else {
-          if (response.data.err_code == 0) {
-            this.total = response.data.data;
-          } else {
-            this.$Message.error("请求失败，" + response.data.error);
-          }
-        }
-      }
-    );
     this.getData();
   },
   watch: {
@@ -76,6 +57,30 @@ export default {
   },
   methods: {
     getData() {
+      this.$Loading.start();
+      this.end = this.page_size;
+      this.$api.get(
+        "myhomeworknum/",
+        {
+          status: "notdone",
+        },
+        (response) => {
+          if (response.status != 200) {
+            this.$Message.error("请求失败，服务器错误");
+            this.$Message.error("" + response);
+            this.$Loading.error();
+            return;
+          } else {
+            if (response.data.err_code == 0) {
+              this.total = response.data.data;
+            } else {
+              this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
+              return;
+            }
+          }
+        }
+      );
       this.$api.get(
         "myhomework/",
         {
@@ -87,19 +92,23 @@ export default {
           if (response.status != 200) {
             this.$Message.error("请求失败，服务器错误");
             this.$Message.error("" + response);
+            this.$Loading.error();
+            return;
           } else {
             if (response.data.err_code == 0) {
               this.list_data = response.data.data;
+              this.$Loading.finish();
             } else {
               this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
+              return;
             }
           }
         }
       );
     },
-    toSubmit(id)
-    {
-      this.$router.push('/submit/'+id);
+    toSubmit(id) {
+      this.$router.push("/submit/" + id);
     },
     formatDate(UTCDateString) {
       if (!UTCDateString) {

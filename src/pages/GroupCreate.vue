@@ -14,7 +14,7 @@
         </List>
         <div style="text-align: center">
           <Page
-          :current="page"
+            :current="page"
             :total="total"
             :page-size="page_size"
             @on-change="change_page"
@@ -37,36 +37,40 @@ export default {
     };
   },
   created() {
-    this.end = this.page_size;
-    this.$api.get(
-      "mygroupnum/",
-      {
-        status: "owner",
-      },
-      (response) => {
-        if (response.status != 200) {
-          this.$Message.error("请求失败，服务器错误");
-          this.$Message.error("" + response);
-        } else {
-          if (response.data.err_code == 0) {
-            this.total = response.data.data;
-          } else {
-            this.$Message.error("请求失败，" + response.data.error);
-          }
-        }
-      }
-    );
     this.getData();
   },
   watch: {
-    $route(to,from) {
-      this.page =Number(to.params.page);
+    $route(to, from) {
+      this.page = Number(to.params.page);
       this.getData();
-      from
+      from;
     },
   },
   methods: {
     getData() {
+      this.$Loading.start();
+      this.end = this.page_size;
+      this.$api.get(
+        "mygroupnum/",
+        {
+          status: "owner",
+        },
+        (response) => {
+          if (response.status != 200) {
+            this.$Message.error("请求失败，服务器错误");
+            this.$Message.error("" + response);
+            this.$Loading.error();
+            return;
+          } else {
+            if (response.data.err_code == 0) {
+              this.total = response.data.data;
+            } else {
+              this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
+            }
+          }
+        }
+      );
       this.$api.get(
         "mygroup/",
         {
@@ -78,11 +82,14 @@ export default {
           if (response.status != 200) {
             this.$Message.error("请求失败，服务器错误");
             this.$Message.error("" + response);
+            this.$Loading.error();
           } else {
             if (response.data.err_code == 0) {
               this.list_data = response.data.data;
+              this.$Loading.finish();
             } else {
               this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
             }
           }
         }
