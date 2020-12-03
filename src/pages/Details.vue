@@ -35,6 +35,12 @@
                 placeholder="请输入备注"
               ></i-Input>
             </FormItem>
+            <FormItem label="允许在结束后继续提交" prop="cam_submit_after_end">
+            <Select v-model="formItem.can_submit_after_end">
+              <Option value="false">否</Option>
+              <Option value="true">是</Option>
+            </Select>
+          </FormItem> 
             <!-- <FormItem label="成员可见完成情况">
               <Select v-model="formItem.member_can_know_donelist">
                 <Option value="false">否</Option>
@@ -152,6 +158,9 @@ export default {
               if (data.member_can_see_others)
                 this.formItem.member_can_see_others = "true";
               else this.formItem.member_can_see_others = "false";
+              if (data.can_submit_after_end)
+                this.formItem.can_submit_after_end = "true";
+              else this.formItem.can_submit_after_end = "false";
             } else {
               this.$Message.error(data.error);
             }
@@ -176,6 +185,7 @@ export default {
               end_time: this.formatDate(this.formItem.end_time),
               member_can_know_donelist: this.formItem.member_can_know_donelist,
               member_can_see_others: this.formItem.member_can_see_others,
+              can_submit_after_end:this.formItem.can_submit_after_end,
             },
             (response) => {
               if (response.status != 200) {
