@@ -87,6 +87,7 @@ export default {
             if (data.err_code == 0) {
               data = data.data;
               this.work = data;
+              this.$Loading.finish()
             } else {
               this.$Message.error(data.error);
               this.$Loading.error();
