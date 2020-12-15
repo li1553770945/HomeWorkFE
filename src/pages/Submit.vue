@@ -10,7 +10,7 @@
       :before-upload="handleUpload"
       :data="{ work_id: this.work_id }"
       type="drag"
-      action="submit/"
+      action="api/submit/"
       :max-size="10240"
       :on-exceeded-size="exceededMaxsize"
       :on-success="handleSuccess"
@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     get() {
+      this.$Loading.start();
       this.$api.get(
         "submit/",
         {
@@ -65,11 +66,15 @@ export default {
             if (data.err_code == 0) {
               data = data.data;
               this.work = data;
+              this.$Loading.finish();
             } else {
               this.$Message.error(data.error);
+              this.$Loading.error();
+              return;
             }
           } else {
             this.$Message.error("服务器错误" + response.data.err_code);
+            return;
           }
         }
       );
@@ -96,7 +101,7 @@ export default {
               this.$Message.error(data.error);
             } else {
               axios
-                .get("download/?work_id=" + String(this.work_id), {
+                .get("api/download/?work_id=" + String(this.work_id), {
                   responseType: "blob",
                 })
                 .then((response) => {

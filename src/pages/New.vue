@@ -26,6 +26,12 @@
               placeholder="请输入备注"
             ></i-Input>
           </FormItem>
+          <FormItem label="允许在结束后继续提交" prop="cam_submit_after_end">
+            <Select v-model="formItem.can_submit_after_end">
+              <Option value="false">否</Option>
+              <Option value="true">是</Option>
+            </Select>
+          </FormItem> 
           <!-- <FormItem label="成员可见完成情况">
             <Select v-model="formItem.member_can_know_donelist">
               <Option value="false">否</Option>
@@ -92,7 +98,7 @@ export default {
   name: "New",
   data() {
     return {
-      page_size: 1,
+      page_size: 10,
       total: 0,
       list_data: "",
       page: 1,
@@ -105,6 +111,7 @@ export default {
         end_time: new Date(),
         member_can_know_donelist: "false",
         member_can_see_others: "false",
+        can_submit_after_end:"false",
         groups: [],
       },
       rule: {
@@ -122,7 +129,7 @@ export default {
             },
             message: "请至少选择一个小组",
             trigger: "change,blur"
-        }]
+        }],
       },
     };
   },
@@ -149,9 +156,6 @@ export default {
     this.getData();
   },
   methods: {
-    change_check() {
-      console.log(this.formItem.groups);
-    },
     formatDate(UTCDateString) {
       if (!UTCDateString) {
         return "-";
@@ -208,6 +212,7 @@ export default {
               member_can_know_donelist: this.formItem.member_can_know_donelist,
               member_can_see_others: this.formItem.member_can_see_others,
               groups: this.formItem.groups,
+              can_submit_after_end:this.formItem.can_submit_after_end,
             },
             (response) => {
               if (response.status != 200) {

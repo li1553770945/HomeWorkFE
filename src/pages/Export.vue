@@ -53,6 +53,7 @@ export default {
   },
   methods: {
     getData() {
+      this.$Loading.start()
       this.$api.get(
         "donelist/",
         {
@@ -62,11 +63,14 @@ export default {
           if (response.status != 200) {
             this.$Message.error("请求失败，服务器错误");
             this.$Message.error("" + response);
+            this.$Loading.error();
           } else {
             if (response.data.err_code == 0) {
               this.list_data = response.data.data;
             } else {
               this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
+              return;
             }
           }
         }
@@ -83,11 +87,14 @@ export default {
             if (data.err_code == 0) {
               data = data.data;
               this.work = data;
+              this.$Loading.finish()
             } else {
               this.$Message.error(data.error);
+              this.$Loading.error();
             }
           } else {
             this.$Message.error("服务器错误" + response.data.err_code);
+            this.$Loading.error();
           }
         }
       );
@@ -100,6 +107,7 @@ export default {
         (response) => {
           var data = response.data;
           if (data.err_code == 0) {
+            this.$Loading.finish()
             this.$Message.success("请求成功，后台正在处理，请耐心等待");
           } else {
             this.$Message.error("请求失败");
@@ -109,16 +117,17 @@ export default {
           }
         }
       );
+      const myAppConfig = window.appConfig;
+      var baseURL = myAppConfig.baseURL;
       this.$worker
         .run(
-          (work_id) => {
+          (work_id,baseURL) => {
             var done = false;
             while (!done) {
-              
-              var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
+              var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象 
               httpRequest.open(
                 "GET",
-                "http://localhost:8080/export/?work_id=" +
+                baseURL+"export/?work_id="+
                   String(work_id) +
                   "&status=status",
                 false
@@ -130,13 +139,12 @@ export default {
                   if (json["err_code"] != 0) {
                     return json["error"];
                   } else {
-                    if (json["done"]) {
+                    if (json['data']["done"]) {
+                      done = true;
                       return 1;
                     } else {
                       var now = new Date();
                       var exitTime = now.getTime() + 2000;
-                      console.log(exitTime);
-                      console.log(now)
                       while (now.getTime() < exitTime) {
                         now = new Date();
                       }
@@ -152,12 +160,12 @@ export default {
               }
             }
           },
-          [this.work_id]
+          [this.work_id,baseURL]
         )
         .then((res) => {
           if (res == 1) {
             axios
-              .get("export/?work_id=" + String(this.work_id), {
+              .get("api/export/?work_id=" + String(this.work_id), {
                 responseType: "blob",
               })
               .then((response) => {
@@ -179,7 +187,7 @@ export default {
                     navigator.msSaveBlob(blob, file_name);
                   }
                 } else {
-                  this.$Message.error("导出失败，未知错误");
+                  this.$Message.error("导出失败，未知错误，请您刷新页面重试");
                 }
               })
               .catch((e) => {
@@ -214,7 +222,7 @@ export default {
             } else {
               axios
                 .get(
-                  "export/?work_id=" +
+                  "api/export/?work_id=" +
                     String(this.work_id) +
                     "&user_id=" +
                     String(user_id) +

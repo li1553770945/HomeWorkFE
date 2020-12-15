@@ -36,6 +36,7 @@ export default {
   },
   methods: {
     getData() {
+      this.$Loading.start()
       this.$api.get(
         "groupmembers/",
         {
@@ -45,11 +46,14 @@ export default {
           if (response.status != 200) {
             this.$Message.error("请求失败，服务器错误");
             this.$Message.error("" + response);
+            this.$Loading.error();
           } else {
             if (response.data.err_code == 0) {
               this.list_data = response.data.data;
+              this.$Loading.finish();
             } else {
               this.$Message.error("请求失败，" + response.data.error);
+              this.$Loading.error();
             }
           }
         }

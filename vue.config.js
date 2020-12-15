@@ -6,7 +6,7 @@ module.exports = {
         open: true,             //  npm run serve 自动打开浏览器
         index: '/index.html',    //  默认启动页面
         proxy: {
-            '/': {
+            '/api': {
                 target: 'http://localhost:8000/',  // 接口地址
                 changeOrigin: true,
             }
